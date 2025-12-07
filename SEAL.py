@@ -41,11 +41,11 @@ def sha1_G(a, i):
         B = A
         A = TEMP
 
-    H[0] = (H[0] + A)
-    H[1] = (H[1] + B)
-    H[2] = (H[2] + C)
-    H[3] = (H[3] + D)
-    H[4] = (H[4] + E)
+    H[0] = (H[0] + A) & 0xffffffff
+    H[1] = (H[1] + B) & 0xffffffff
+    H[2] = (H[2] + C) & 0xffffffff
+    H[3] = (H[3] + D) & 0xffffffff
+    H[4] = (H[4] + E) & 0xffffffff
 
     return H
 
