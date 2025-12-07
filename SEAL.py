@@ -80,3 +80,15 @@ def build_tables(a):
         R[k] = word_H(a, 0x2000 + k)
 
     return T, S, R
+
+key = b'\x01\x23\x45\x67\x89\xab\xcd\xef\xfe\xdc\xba\x98\x76\x54\x32\x10\x11\x22\x33\x44'
+
+T, S, R = build_tables(key)
+
+print(len(T))
+print(len(S))
+print(len(R))
+
+print(T[0:9])
+print(S[0:9])
+print(R[0:9])
