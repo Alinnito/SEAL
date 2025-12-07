@@ -57,8 +57,10 @@ def build_tables(a, i):
     Возвращает таблицы T, S, R
     '''
 
-    T = sha1_G(a, i)
-    S = sha1_G(a, 0x1000 + i)
-    R = sha1_G(a, 0x2000 + i)
+    j = i // 5
+
+    T = sha1_G(a, j)
+    S = sha1_G(a, 0x1000 + j)
+    R = sha1_G(a, 0x2000 + j)
 
     return T, S, R
