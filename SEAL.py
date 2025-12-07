@@ -49,18 +49,34 @@ def sha1_G(a, i):
 
     return H
 
-# Построение таблиц
-def build_tables(a, i):
+def word_H(a, i):
     '''
     a: 20-байтный ключ
     i: число
+    Возвращает одно 32-битное слово H
+    '''
+    j = i // 5
+    index = i % 5
+    H = sha1_G(a, j)
+    return H[index]
+
+# Построение таблиц
+def build_tables(a):
+    '''
+    a: 20-байтный ключ
     Возвращает таблицы T, S, R
     '''
+    T = [0] * 512
+    S = [0] * 256
+    R = [0] * 256
 
-    j = i // 5
+    for i in range(512):
+        T[i] = word_H(a, i)
 
-    T = sha1_G(a, j)
-    S = sha1_G(a, 0x1000 + j)
-    R = sha1_G(a, 0x2000 + j)
+    for j in range(256):
+        S[j] = word_H(a, 0x1000 + j)
+
+    for k in range(256):
+        R[k] = word_H(a, 0x2000 + k)
 
     return T, S, R
