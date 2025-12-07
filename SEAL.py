@@ -81,6 +81,53 @@ def build_tables(a):
 
     return T, S, R
 
+# Инициализация служебных регистров
+
+def registers_init(n, l, R_table, T_table):
+    A = (n ^ R_table[4 * l])
+    B = (n ^ T_table[4 * l + 1])
+    C = (n ^ T_table[4 * l + 2])
+    D = (n ^ T_table[4 * l + 3])
+
+    for j in range(2):
+        P = A & 0x7FC
+        B = B + T_table[P // 4]
+        A = A >> 9
+
+        P = B & 0x7FC
+        C = C + T_table[P // 4]
+        B = B >> 9
+
+        P = C & 0x7FC
+        D = D + T_table[P // 4]
+        C = C >> 9
+
+        P = D & 0x7FC
+        A = A + T_table[P // 4]
+        D = D >> 9
+
+    n1, n2, n3, n4 = D, B, A, C
+
+    P = A & 0x7FC
+    B = B + T_table[P // 4]
+    A = A >> 9
+
+    P = B & 0x7FC
+    C = C + T_table[P // 4]
+    B = B >> 9
+
+    P = C & 0x7FC
+    D = D + T_table[P // 4]
+    C = C >> 9
+
+    P = D & 0x7FC
+    A = A + T_table[P // 4]
+    D = D >> 9
+
+    return A, B, C, D, n1, n2, n3, n4
+
+
+
 key = b'\x01\x23\x45\x67\x89\xab\xcd\xef\xfe\xdc\xba\x98\x76\x54\x32\x10\x11\x22\x33\x44'
 
 T, S, R = build_tables(key)
