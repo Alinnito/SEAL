@@ -84,11 +84,21 @@ def build_tables(a):
 # Инициализация служебных регистров
 
 def registers_init(n, l, R_table, T_table):
+    '''
+    n:
+    l:
+    R_table: таблица R
+    T_table: таблица T
+    Возвращает 4 32-битовых служебных регистра (A, B, C, D) и 4 32-битовых слова (n1, n2, n3, n4)
+    '''
+
+    # Инициализация регистров
     A = (n ^ R_table[4 * l])
     B = (n ^ T_table[4 * l + 1])
     C = (n ^ T_table[4 * l + 2])
     D = (n ^ T_table[4 * l + 3])
 
+    # Цикл на 2 повтора
     for j in range(2):
         P = A & 0x7FC
         B = B + T_table[P // 4]
@@ -106,8 +116,10 @@ def registers_init(n, l, R_table, T_table):
         A = A + T_table[P // 4]
         D = D >> 9
 
+    # Присваиваем значения
     n1, n2, n3, n4 = D, B, A, C
 
+    # Аналогичный код из цикла
     P = A & 0x7FC
     B = B + T_table[P // 4]
     A = A >> 9
