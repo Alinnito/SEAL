@@ -138,7 +138,94 @@ def registers_init(n, l, R_table, T_table):
 
     return A, B, C, D, n1, n2, n3, n4
 
+# Псевдослучайная функция
+def SEAL(n, L, R_table, T_table, S_table):
+    '''
+    n: 32-битный индекс
+    L: требуемая длина выходной последовательности (в байтах)
+    R_table: Таблица R
+    T_table: Таблица T
+    S_table: Таблица S
+    Генерирует псевдослучайную последовательность
+    '''
+    # Изменяемый массив байт
+    bytesLst = bytearray()
 
+    l = 0 # Количество пройденных итераций
+
+    while True:
+        A, B, C, D, n1, n2, n3, n4 = registers_init(n, l, R_table, T_table)
+
+        l += 1
+
+        for i in range(1, 65):
+
+            # 1
+            P = A & 0x7FC
+            B = B + T_table[P // 4]
+            A = A >> 9
+            B = B ^ A
+
+            # 2
+            Q = B & 0x7FC
+            C = C ^ T_table[Q // 4]
+            B = B >> 9
+            C = C + B
+
+            # 3
+            P = P + C
+            D = D + T_table[P // 4]
+            C = C >> 9
+            D = D ^ C
+
+            # 4
+            Q = (Q + D) & 0x7FC
+            A = A ^ T_table[Q // 4]
+            D = D >> 9
+            A = A + D
+
+            # 5
+            P = P + A
+            B = B ^ T_table[P // 4]
+            A = A >> 9
+
+            # 6
+            Q = (Q + B) & 0x7FC
+            C = C + T_table[Q // 4]
+            B = B >> 9
+
+            # 7
+            P = P + C
+            D = D ^ T_table[P // 4]
+            C = C >> 9
+
+            # 8
+            Q = (Q + D) & 0x7FC
+            A = A + T_table[Q // 4]
+            D = D >> 9
+
+            # Формируем 4 слова, меняем в байты
+            bytesLst += (B + S_table[4 * i - 4]).to_bytes(4, byteorder='big')
+            bytesLst += (C ^ S_table[4 * i - 3]).to_bytes(4, byteorder='big')
+            bytesLst += (D + S_table[4 * i - 2]).to_bytes(4, byteorder='big')
+            bytesLst += (A ^ S_table[4 * i - 1]).to_bytes(4, byteorder='big')
+
+            # Проверка длины
+            if len(bytesLst) >= L:
+                return bytes(bytesLst[:L])
+
+            if i & 1:
+                # Нечетное i
+                A = A + n1
+                B = B + n2
+                C = C ^ n1
+                D = D ^ n2
+            else:
+                # Четное i
+                A = A + n3
+                B = B + n4
+                C = C ^ n3
+                D = D ^ n4
 
 key = b'\x01\x23\x45\x67\x89\xab\xcd\xef\xfe\xdc\xba\x98\x76\x54\x32\x10\x11\x22\x33\x44'
 
