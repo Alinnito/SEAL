@@ -1,4 +1,5 @@
 import struct
+import os
 
 # Создание таблиц шифрования из ключа
 def sha1_G(a, i):
@@ -236,8 +237,8 @@ L = len(text)
 # Одноразовое число
 n = 1
 
-# 20-байтный ключ
-key = b'\x01\x23\x45\x67\x89\xab\xcd\xef\xfe\xdc\xba\x98\x76\x54\x32\x10\x11\x22\x33\x44'
+# генерация случайного 20-байтного ключа
+key = os.urandom(20)
 
 # Генерируем таблицы T, S, R
 T, S, R = build_tables(key)
