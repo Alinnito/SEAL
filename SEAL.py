@@ -243,6 +243,12 @@ key = b'\x01\x23\x45\x67\x89\xab\xcd\xef\xfe\xdc\xba\x98\x76\x54\x32\x10\x11\x22
 T, S, R = build_tables(key)
 
 # Генерируем псевдослучайную последовательность
+rmd_sequence = SEAL(n, L, R, T, S)
 
-stream = SEAL(n, L, R, T, S)
+# Шифруем текст
+cithertext = bytes([t ^ s for t, s in zip(text, rmd_sequence)])
+print(cithertext)
 
+# Расшифровываем текст
+decryptedtext = bytes([t ^ s for t, s in zip(cithertext, rmd_sequence)])
+print(decryptedtext)
