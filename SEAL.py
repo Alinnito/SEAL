@@ -85,8 +85,8 @@ def build_tables(a):
 
 def registers_init(n, l, R_table, T_table):
     '''
-    n:
-    l:
+    n: 32-битовое число
+    l: число пройденных итераций из SEAL
     R_table: таблица R
     T_table: таблица T
     Возвращает 4 32-битовых служебных регистра (A, B, C, D) и 4 32-битовых слова (n1, n2, n3, n4)
@@ -173,7 +173,7 @@ def SEAL(n, L, R_table, T_table, S_table):
             C = C + B
 
             # 3
-            P = P + C
+            P = (P + C) & 0x7FC
             D = D + T_table[P // 4]
             C = C >> 9
             D = D ^ C
@@ -185,7 +185,7 @@ def SEAL(n, L, R_table, T_table, S_table):
             A = A + D
 
             # 5
-            P = P + A
+            P = (P + A) & 0x7FC
             B = B ^ T_table[P // 4]
             A = A >> 9
 
@@ -195,7 +195,7 @@ def SEAL(n, L, R_table, T_table, S_table):
             B = B >> 9
 
             # 7
-            P = P + C
+            P = (P + C) & 0x7FC
             D = D ^ T_table[P // 4]
             C = C >> 9
 
@@ -227,14 +227,22 @@ def SEAL(n, L, R_table, T_table, S_table):
                 C = C ^ n3
                 D = D ^ n4
 
+# Исходный текст
+text = b'123test'
+
+# Длина текста
+L = len(text)
+
+# Одноразовое число
+n = 1
+
+# 20-байтный ключ
 key = b'\x01\x23\x45\x67\x89\xab\xcd\xef\xfe\xdc\xba\x98\x76\x54\x32\x10\x11\x22\x33\x44'
 
+# Генерируем таблицы T, S, R
 T, S, R = build_tables(key)
 
-print(len(T))
-print(len(S))
-print(len(R))
+# Генерируем псевдослучайную последовательность
 
-print(T[0:9])
-print(S[0:9])
-print(R[0:9])
+stream = SEAL(n, L, R, T, S)
+
