@@ -6,7 +6,7 @@ def sha1_G(a, i):
     '''
     a: 20-байтный ключ (160 бит)
     i: 32-битное целое число
-    Возвращаем 160-битное значение Ga(i)
+    Возвращает 160-битное значение H по 5 32
     '''
 
     # Разбиваем 160-битовую строку на 5 32-битных слов
@@ -42,6 +42,7 @@ def sha1_G(a, i):
         B = A
         A = TEMP
 
+    # 5 32-битных слов
     H[0] = (H[0] + A) & 0xffffffff
     H[1] = (H[1] + B) & 0xffffffff
     H[2] = (H[2] + C) & 0xffffffff
@@ -86,7 +87,7 @@ def build_tables(a):
 
 def registers_init(n, l, R_table, T_table):
     '''
-    n: 32-битовое число
+    n: 32-битовое число (nonce)
     l: число пройденных итераций из SEAL
     R_table: таблица R
     T_table: таблица T
@@ -142,14 +143,14 @@ def registers_init(n, l, R_table, T_table):
 # Псевдослучайная функция
 def SEAL(n, L, R_table, T_table, S_table):
     '''
-    n: 32-битный индекс
+    n: 32-битовое число (nonce)
     L: требуемая длина выходной последовательности (в байтах)
     R_table: Таблица R
     T_table: Таблица T
     S_table: Таблица S
     Генерирует псевдослучайную последовательность
     '''
-    # Изменяемый массив байт
+    # Изменяемая последовательность байт
     bytesLst = bytearray()
 
     l = 0 # Количество пройденных итераций
@@ -206,16 +207,16 @@ def SEAL(n, L, R_table, T_table, S_table):
             D = D >> 9
 
             # Формируем 4 слова, меняем в байты
-            bytesLst += (B + S_table[4 * i - 4]).to_bytes(4, byteorder='big')
-            bytesLst += (C ^ S_table[4 * i - 3]).to_bytes(4, byteorder='big')
-            bytesLst += (D + S_table[4 * i - 2]).to_bytes(4, byteorder='big')
-            bytesLst += (A ^ S_table[4 * i - 1]).to_bytes(4, byteorder='big')
+            bytesLst += (B + S_table[4 * i - 4]).to_bytes(4)
+            bytesLst += (C ^ S_table[4 * i - 3]).to_bytes(4)
+            bytesLst += (D + S_table[4 * i - 2]).to_bytes(4)
+            bytesLst += (A ^ S_table[4 * i - 1]).to_bytes(4)
 
             # Проверка длины
             if len(bytesLst) >= L:
-                return bytes(bytesLst[:L])
+                return bytesLst[:L]
 
-            if i & 1:
+            if i % 2 != 0:
                 # Нечетное i
                 A = A + n1
                 B = B + n2
@@ -229,7 +230,8 @@ def SEAL(n, L, R_table, T_table, S_table):
                 D = D ^ n4
 
 # Исходный текст
-text = b'123test'
+text = ('TEST test ТЕСТ тест 1234567890!"№;%:?*()')
+text = text.encode('utf8')
 
 # Длина текста
 L = len(text)
@@ -252,4 +254,4 @@ print(cithertext)
 
 # Расшифровываем текст
 decryptedtext = bytes([t ^ s for t, s in zip(cithertext, rmd_sequence)])
-print(decryptedtext)
+print(decryptedtext.decode('utf8'))
