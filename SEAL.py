@@ -86,7 +86,6 @@ def build_tables(a):
     return T, S, R
 
 # Инициализация служебных регистров
-
 def registers_init(n, l, R_table, T_table):
     '''
     n: 32-битовое число (nonce)
@@ -234,12 +233,19 @@ def SEAL(n, L, R_table, T_table, S_table):
 # генерация случайного 20-байтного ключа
 key = os.urandom(20)
 
+# Функции кнопок
 def button_clean():
+    '''
+    Очистка трех текстовых полей
+    '''
     text1.delete(1.0, tk.END)
     text2.delete(1.0, tk.END)
     text3.delete(1.0, tk.END)
 
 def button_coding():
+    '''
+    Шифрование текста из text1 и вывод результата в text2
+    '''
     text = text1.get("1.0", "end-1c")
     text = text.encode("utf-8")
 
@@ -266,6 +272,9 @@ def button_coding():
     text2.insert("1.0", cithertext)
 
 def button_decoding():
+    '''
+    Расшифровка текста из text2 и вывод результата в text3
+    '''
     text = text2.get("1.0", "end-1c")
 
     # Преобразовываем в байтовую строку
@@ -292,13 +301,14 @@ def button_decoding():
 
 # Главное окно
 root = tk.Tk()
-root.geometry("1000x600")
-root.title('Шифрование SEAL')
+root.geometry("1000x600") # Размер окна
+root.title('Шифрование SEAL') # Название окна
 
 # Создаем колонки и строки
 for c in range(3): root.columnconfigure(c, weight=1)
 for r in range(3): root.rowconfigure(r, weight=1)
 
+# Названия колонок
 label1 = tk.Label(root, text='Исходный текст', font=('Arial', 12))
 label1.grid(row=0, column=0)
 
@@ -308,6 +318,7 @@ label2.grid(row=0, column=1)
 label3 = tk.Label(root, text='Расшифрованный текст', font=('Arial', 12))
 label3.grid(row=0, column=2)
 
+# Колонки (текстовые поля) для ввода и вывода текста
 text1 = scrolledtext.ScrolledText(root)
 text1.grid(row=1, column=0, sticky=tk.NSEW)
 
@@ -317,6 +328,7 @@ text2.grid(row=1, column=1, sticky=tk.NSEW)
 text3 = scrolledtext.ScrolledText(root)
 text3.grid(row=1, column=2, sticky=tk.NSEW)
 
+# Кнопки
 button1 = tk.Button(root, text='Шифрование', command=button_coding, font=('Arial', 12))
 button1.grid(row=2, column=0, padx=5, sticky=tk.EW)
 
@@ -325,6 +337,5 @@ button2.grid(row=2, column=1, padx=5, sticky=tk.EW)
 
 button3 = tk.Button(root, text='Очистка полей', command=button_clean, font=('Arial', 12))
 button3.grid(row=2, column=2, padx=5, sticky=tk.EW)
-
 
 root.mainloop()
