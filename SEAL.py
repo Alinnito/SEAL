@@ -240,7 +240,7 @@ def button_clean():
     text3.delete(1.0, tk.END)
 
 def button_coding():
-    text = text1.get("1.0", tk.END)
+    text = text1.get("1.0", "end-1c")
     text = text.encode("utf-8")
 
     # Длина текста
@@ -266,9 +266,8 @@ def button_coding():
     text2.insert("1.0", cithertext)
 
 def button_decoding():
-    text = text2.get("1.0", tk.END)
+    text = text2.get("1.0", "end-1c")
 
-    text = text[:-1] # Удаляем символ n - перенос строки
     # Преобразовываем в байтовую строку
     text = text.encode("utf-8").decode("unicode-escape").encode("latin1")
 
@@ -293,39 +292,39 @@ def button_decoding():
 
 # Главное окно
 root = tk.Tk()
-root.geometry("800x600")
+root.geometry("1000x600")
 root.title('Шифрование SEAL')
 
 # Создаем колонки и строки
 for c in range(3): root.columnconfigure(c, weight=1)
 for r in range(3): root.rowconfigure(r, weight=1)
 
-label1 = tk.Label(root, text='Исходный текст')
+label1 = tk.Label(root, text='Исходный текст', font=('Arial', 12))
 label1.grid(row=0, column=0)
 
-label2 = tk.Label(root, text='Зашифрованный текст')
+label2 = tk.Label(root, text='Зашифрованный текст', font=('Arial', 12))
 label2.grid(row=0, column=1)
 
-label3 = tk.Label(root, text='Расшифрованный текст')
+label3 = tk.Label(root, text='Расшифрованный текст', font=('Arial', 12))
 label3.grid(row=0, column=2)
 
-text1 = scrolledtext.ScrolledText(root, width=40, height=20)
-text1.grid(row=1, column=0)
+text1 = scrolledtext.ScrolledText(root)
+text1.grid(row=1, column=0, sticky=tk.NSEW)
 
-text2 = scrolledtext.ScrolledText(root, width=40, height=20)
-text2.grid(row=1, column=1)
+text2 = scrolledtext.ScrolledText(root)
+text2.grid(row=1, column=1, sticky=tk.NSEW)
 
-text3 = scrolledtext.ScrolledText(root, width=40, height=20)
-text3.grid(row=1, column=2)
+text3 = scrolledtext.ScrolledText(root)
+text3.grid(row=1, column=2, sticky=tk.NSEW)
 
-button1 = tk.Button(root, text='Шифрование', command=button_coding)
-button1.grid(row=2, column=0)
+button1 = tk.Button(root, text='Шифрование', command=button_coding, font=('Arial', 12))
+button1.grid(row=2, column=0, padx=5, sticky=tk.EW)
 
-button2 = tk.Button(root, text='Расшифровка', command=button_decoding)
-button2.grid(row=2, column=1)
+button2 = tk.Button(root, text='Расшифровка', command=button_decoding, font=('Arial', 12))
+button2.grid(row=2, column=1, padx=5, sticky=tk.EW)
 
-button3 = tk.Button(root, text='Очистка', command=button_clean)
-button3.grid(row=2, column=2)
+button3 = tk.Button(root, text='Очистка полей', command=button_clean, font=('Arial', 12))
+button3.grid(row=2, column=2, padx=5, sticky=tk.EW)
 
 
 root.mainloop()
