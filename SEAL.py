@@ -209,10 +209,10 @@ def SEAL(n, L, R_table, T_table, S_table):
             D = D >> 9
 
             # Формируем 4 слова, меняем в байты
-            bytesLst += (B + S_table[4 * i - 4]).to_bytes(4)
-            bytesLst += (C ^ S_table[4 * i - 3]).to_bytes(4)
-            bytesLst += (D + S_table[4 * i - 2]).to_bytes(4)
-            bytesLst += (A ^ S_table[4 * i - 1]).to_bytes(4)
+            bytesLst += (B + S_table[4 * i - 4] & 0xffffffff).to_bytes(4)
+            bytesLst += (C ^ S_table[4 * i - 3] & 0xffffffff).to_bytes(4)
+            bytesLst += (D + S_table[4 * i - 2] & 0xffffffff).to_bytes(4)
+            bytesLst += (A ^ S_table[4 * i - 1] & 0xffffffff).to_bytes(4)
 
             # Проверка длины
             if len(bytesLst) >= L:
