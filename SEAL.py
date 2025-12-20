@@ -260,7 +260,31 @@ def button_coding():
     text2.delete("1.0", tk.END)
     text2.insert("1.0", cithertext)
 
+def button_decoding():
+    text = text2.get("1.0", tk.END)
 
+    text = text[:-1] # Удаляем символ n - перенос строки
+    # Преобразовываем в байтовую строку
+    text = text.encode("utf-8").decode("unicode-escape").encode("latin1")
+
+    # Длина текста
+    L = len(text)
+
+    # Одноразовое число
+    n = 1
+
+    # Генерируем таблицы T, S, R
+    T, S, R = build_tables(key)
+
+    # Генерируем псевдослучайную последовательность
+    rmd_sequence = SEAL(n, L, R, T, S)
+
+    # Расшифровываем текст
+    decryptedtext = bytes([t ^ s for t, s in zip(text, rmd_sequence)])
+
+    # Выводим текст в текстовое поле text2
+    text3.delete("1.0", tk.END)
+    text3.insert("1.0", decryptedtext.decode("utf-8"))
 
 # Главное окно
 root = tk.Tk()
@@ -292,14 +316,8 @@ text3.grid(row=1, column=2)
 button1 = tk.Button(root, text='Шифрование', command=button_coding)
 button1.grid(row=2, column=0)
 
-button2 = tk.Button(root, text='Расшифровка')
+button2 = tk.Button(root, text='Расшифровка', command=button_decoding)
 button2.grid(row=2, column=1)
 
 
 root.mainloop()
-
-'''
-# Расшифровываем текст
-decryptedtext = bytes([t ^ s for t, s in zip(cithertext, rmd_sequence)])
-print(decryptedtext.decode('utf8'))
-'''
