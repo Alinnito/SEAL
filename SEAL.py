@@ -1,5 +1,7 @@
 import struct
 import os
+import tkinter as tk
+from tkinter import scrolledtext
 
 # Создание таблиц шифрования из ключа
 def sha1_G(a, i):
@@ -228,6 +230,13 @@ def SEAL(n, L, R_table, T_table, S_table):
                 B = B + n4
                 C = C ^ n3
                 D = D ^ n4
+
+# Главное окно
+root = tk.Tk()
+root.geometry("800x600")
+root.title('Шифрование SEAL')
+
+root.mainloop()
 
 # Исходный текст
 text = ('ФИО: Ширяев Вадим Арсеньевич'
