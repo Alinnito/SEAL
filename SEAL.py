@@ -236,6 +236,35 @@ root = tk.Tk()
 root.geometry("800x600")
 root.title('Шифрование SEAL')
 
+# Создаем колонки и строки
+for c in range(3): root.columnconfigure(c, weight=1)
+for r in range(3): root.rowconfigure(r, weight=1)
+
+label1 = tk.Label(root, text='Исходный текст')
+label1.grid(row=0, column=0)
+
+label2 = tk.Label(root, text='Зашифрованный текст')
+label2.grid(row=0, column=1)
+
+label3 = tk.Label(root, text='Расшифрованный текст')
+label3.grid(row=0, column=2)
+
+text1 = scrolledtext.ScrolledText(root, width=40, height=20)
+text1.grid(row=1, column=0)
+
+text2 = scrolledtext.ScrolledText(root, width=40, height=20)
+text2.grid(row=1, column=1)
+
+text3 = scrolledtext.ScrolledText(root, width=40, height=20)
+text3.grid(row=1, column=2)
+
+button1 = tk.Button(root, text='Шифрование')
+button1.grid(row=2, column=0)
+
+button2 = tk.Button(root, text='Расшифровка')
+button2.grid(row=2, column=1)
+
+
 root.mainloop()
 
 # Исходный текст
