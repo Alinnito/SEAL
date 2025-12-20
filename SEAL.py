@@ -231,6 +231,37 @@ def SEAL(n, L, R_table, T_table, S_table):
                 C = C ^ n3
                 D = D ^ n4
 
+# генерация случайного 20-байтного ключа
+key = os.urandom(20)
+
+def button_coding():
+    text = text1.get("1.0", tk.END)
+    text = text.encode("utf-8")
+
+    # Длина текста
+    L = len(text)
+
+    # Одноразовое число
+    n = 1
+
+    # Генерируем таблицы T, S, R
+    T, S, R = build_tables(key)
+
+    # Генерируем псевдослучайную последовательность
+    rmd_sequence = SEAL(n, L, R, T, S)
+
+    # Шифруем текст
+    cithertext = bytes([t ^ s for t, s in zip(text, rmd_sequence)])
+
+    # Для правильного отображения
+    cithertext = repr(cithertext)[2:-1]
+
+    # Выводим текст в текстовое поле text2
+    text2.delete("1.0", tk.END)
+    text2.insert("1.0", cithertext)
+
+
+
 # Главное окно
 root = tk.Tk()
 root.geometry("800x600")
@@ -258,7 +289,7 @@ text2.grid(row=1, column=1)
 text3 = scrolledtext.ScrolledText(root, width=40, height=20)
 text3.grid(row=1, column=2)
 
-button1 = tk.Button(root, text='Шифрование')
+button1 = tk.Button(root, text='Шифрование', command=button_coding)
 button1.grid(row=2, column=0)
 
 button2 = tk.Button(root, text='Расшифровка')
@@ -267,40 +298,8 @@ button2.grid(row=2, column=1)
 
 root.mainloop()
 
-# Исходный текст
-text = ('ФИО: Ширяев Вадим Арсеньевич'
-' Дата рождения: 28.02.2003'
-' Адрес проживания: Россия, г. Оренбург, Полевая ул., д. 1, кв. 75'
-' Номер и серия паспорта: 4447 915048'
-' Код подразделения: 900-673'
-' Кем выдан: отделением УФМС России в г. Оренбург'
-' Дата выдачи паспорта: 18.03.2023'
-' СНИЛС: 918-012-161 73'
-' ИНН: 763884644233'
-' Серия и номер диплома: 189170 7183742'
-' Номер телефона: +7 (900) 936-73-12')
-
-text = text.encode('utf8')
-
-# Длина текста
-L = len(text)
-
-# Одноразовое число
-n = 1
-
-# генерация случайного 20-байтного ключа
-key = os.urandom(20)
-
-# Генерируем таблицы T, S, R
-T, S, R = build_tables(key)
-
-# Генерируем псевдослучайную последовательность
-rmd_sequence = SEAL(n, L, R, T, S)
-
-# Шифруем текст
-cithertext = bytes([t ^ s for t, s in zip(text, rmd_sequence)])
-print(cithertext)
-
+'''
 # Расшифровываем текст
 decryptedtext = bytes([t ^ s for t, s in zip(cithertext, rmd_sequence)])
 print(decryptedtext.decode('utf8'))
+'''
