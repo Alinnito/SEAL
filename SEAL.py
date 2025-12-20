@@ -230,6 +230,23 @@ def SEAL(n, L, R_table, T_table, S_table):
                 C = C ^ n3
                 D = D ^ n4
 
+def create_rmd_sequence(text):
+    '''
+    text: текст для шифровки (расшифровки)
+    Возвращает псевдослучайную последовательность
+    '''
+    # Длина текста
+    L = len(text)
+
+    # Одноразовое число
+    n = 1
+
+    # Генерируем таблицы T, S, R
+    T, S, R = build_tables(key)
+
+    # Генерируем псевдослучайную последовательность
+    return SEAL(n, L, R, T, S)
+
 # генерация случайного 20-байтного ключа
 key = os.urandom(20)
 
@@ -249,17 +266,8 @@ def button_coding():
     text = text1.get("1.0", "end-1c")
     text = text.encode("utf-8")
 
-    # Длина текста
-    L = len(text)
-
-    # Одноразовое число
-    n = 1
-
-    # Генерируем таблицы T, S, R
-    T, S, R = build_tables(key)
-
     # Генерируем псевдослучайную последовательность
-    rmd_sequence = SEAL(n, L, R, T, S)
+    rmd_sequence = create_rmd_sequence(text)
 
     # Шифруем текст
     cithertext = bytes([t ^ s for t, s in zip(text, rmd_sequence)])
@@ -280,17 +288,8 @@ def button_decoding():
     # Преобразовываем в байтовую строку
     text = text.encode("utf-8").decode("unicode-escape").encode("latin1")
 
-    # Длина текста
-    L = len(text)
-
-    # Одноразовое число
-    n = 1
-
-    # Генерируем таблицы T, S, R
-    T, S, R = build_tables(key)
-
     # Генерируем псевдослучайную последовательность
-    rmd_sequence = SEAL(n, L, R, T, S)
+    rmd_sequence = create_rmd_sequence(text)
 
     # Расшифровываем текст
     decryptedtext = bytes([t ^ s for t, s in zip(text, rmd_sequence)])
