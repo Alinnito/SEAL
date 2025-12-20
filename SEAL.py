@@ -234,6 +234,11 @@ def SEAL(n, L, R_table, T_table, S_table):
 # генерация случайного 20-байтного ключа
 key = os.urandom(20)
 
+def button_clean():
+    text1.delete(1.0, tk.END)
+    text2.delete(1.0, tk.END)
+    text3.delete(1.0, tk.END)
+
 def button_coding():
     text = text1.get("1.0", tk.END)
     text = text.encode("utf-8")
@@ -318,6 +323,9 @@ button1.grid(row=2, column=0)
 
 button2 = tk.Button(root, text='Расшифровка', command=button_decoding)
 button2.grid(row=2, column=1)
+
+button3 = tk.Button(root, text='Очистка', command=button_clean)
+button3.grid(row=2, column=2)
 
 
 root.mainloop()
