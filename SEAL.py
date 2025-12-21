@@ -2,13 +2,14 @@ import struct
 import os
 import tkinter as tk
 from tkinter import scrolledtext
+from tkinter.messagebox import showerror
 
 # Создание таблиц шифрования из ключа
 def sha1_G(a, i):
     '''
     a: 20-байтный ключ (160 бит)
     i: 32-битное целое число
-    Возвращает 160-битное значение H по 5 32
+    Возвращает 160-битное значение H по 5 32-битных слов
     '''
 
     # Разбиваем 160-битовую строку на 5 32-битных слов
@@ -288,15 +289,23 @@ def button_decoding():
     # Преобразовываем в байтовую строку
     text = text.encode("utf-8").decode("unicode-escape").encode("latin1")
 
+    # При вставке в text3 удаляем перенос строки b'\n'
+    if text[-1:] == b'\n':
+        text = text[:-1]
+
     # Генерируем псевдослучайную последовательность
     rmd_sequence = create_rmd_sequence(text)
 
     # Расшифровываем текст
-    decryptedtext = bytes([t ^ s for t, s in zip(text, rmd_sequence)])
+    try:
+        decryptedtext = bytes([t ^ s for t, s in zip(text, rmd_sequence)]).decode("utf-8")
+    except UnicodeDecodeError:
+        showerror(title='Ошибка', message='Невозможно расшифровать текст')
+        decryptedtext = ''
 
     # Выводим текст в текстовое поле text2
     text3.delete("1.0", tk.END)
-    text3.insert("1.0", decryptedtext.decode("utf-8"))
+    text3.insert("1.0", decryptedtext)
 
 # Главное окно
 root = tk.Tk()
